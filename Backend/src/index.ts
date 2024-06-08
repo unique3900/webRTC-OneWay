@@ -7,6 +7,7 @@ let receiverSocket: WebSocket | null = null;
 
 wss.on("connection", (socket) => {
   socket.on("message", (data: any) => {
+
     const message = JSON.parse(data);
 
     if(message.type==="identify-sender"){
