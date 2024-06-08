@@ -2252,7 +2252,7 @@ var require_websocket = __commonJS({
     var protocolVersions = [8, 13];
     var readyStates = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
     var subprotocolRegex = /^[!#$%&'*+\-.0-9A-Z^_`|a-z~]+$/;
-    var WebSocket3 = class _WebSocket extends EventEmitter {
+    var WebSocket2 = class _WebSocket extends EventEmitter {
       /**
        * Create a new `WebSocket`.
        *
@@ -2621,35 +2621,35 @@ var require_websocket = __commonJS({
         }
       }
     };
-    Object.defineProperty(WebSocket3, "CONNECTING", {
+    Object.defineProperty(WebSocket2, "CONNECTING", {
       enumerable: true,
       value: readyStates.indexOf("CONNECTING")
     });
-    Object.defineProperty(WebSocket3.prototype, "CONNECTING", {
+    Object.defineProperty(WebSocket2.prototype, "CONNECTING", {
       enumerable: true,
       value: readyStates.indexOf("CONNECTING")
     });
-    Object.defineProperty(WebSocket3, "OPEN", {
+    Object.defineProperty(WebSocket2, "OPEN", {
       enumerable: true,
       value: readyStates.indexOf("OPEN")
     });
-    Object.defineProperty(WebSocket3.prototype, "OPEN", {
+    Object.defineProperty(WebSocket2.prototype, "OPEN", {
       enumerable: true,
       value: readyStates.indexOf("OPEN")
     });
-    Object.defineProperty(WebSocket3, "CLOSING", {
+    Object.defineProperty(WebSocket2, "CLOSING", {
       enumerable: true,
       value: readyStates.indexOf("CLOSING")
     });
-    Object.defineProperty(WebSocket3.prototype, "CLOSING", {
+    Object.defineProperty(WebSocket2.prototype, "CLOSING", {
       enumerable: true,
       value: readyStates.indexOf("CLOSING")
     });
-    Object.defineProperty(WebSocket3, "CLOSED", {
+    Object.defineProperty(WebSocket2, "CLOSED", {
       enumerable: true,
       value: readyStates.indexOf("CLOSED")
     });
-    Object.defineProperty(WebSocket3.prototype, "CLOSED", {
+    Object.defineProperty(WebSocket2.prototype, "CLOSED", {
       enumerable: true,
       value: readyStates.indexOf("CLOSED")
     });
@@ -2662,10 +2662,10 @@ var require_websocket = __commonJS({
       "readyState",
       "url"
     ].forEach((property) => {
-      Object.defineProperty(WebSocket3.prototype, property, { enumerable: true });
+      Object.defineProperty(WebSocket2.prototype, property, { enumerable: true });
     });
     ["open", "error", "close", "message"].forEach((method) => {
-      Object.defineProperty(WebSocket3.prototype, `on${method}`, {
+      Object.defineProperty(WebSocket2.prototype, `on${method}`, {
         enumerable: true,
         get() {
           for (const listener of this.listeners(method)) {
@@ -2687,9 +2687,9 @@ var require_websocket = __commonJS({
         }
       });
     });
-    WebSocket3.prototype.addEventListener = addEventListener;
-    WebSocket3.prototype.removeEventListener = removeEventListener;
-    module2.exports = WebSocket3;
+    WebSocket2.prototype.addEventListener = addEventListener;
+    WebSocket2.prototype.removeEventListener = removeEventListener;
+    module2.exports = WebSocket2;
     function initAsClient(websocket, address, protocols, options) {
       const opts = {
         allowSynchronousEvents: true,
@@ -2875,7 +2875,7 @@ var require_websocket = __commonJS({
       });
       req.on("upgrade", (res, socket, head) => {
         websocket.emit("upgrade", res);
-        if (websocket.readyState !== WebSocket3.CONNECTING) return;
+        if (websocket.readyState !== WebSocket2.CONNECTING) return;
         req = websocket._req = null;
         if (res.headers.upgrade.toLowerCase() !== "websocket") {
           abortHandshake(websocket, socket, "Invalid Upgrade header");
@@ -2946,7 +2946,7 @@ var require_websocket = __commonJS({
       }
     }
     function emitErrorAndClose(websocket, err) {
-      websocket._readyState = WebSocket3.CLOSING;
+      websocket._readyState = WebSocket2.CLOSING;
       websocket.emit("error", err);
       websocket.emitClose();
     }
@@ -2962,7 +2962,7 @@ var require_websocket = __commonJS({
       return tls.connect(options);
     }
     function abortHandshake(websocket, stream, message) {
-      websocket._readyState = WebSocket3.CLOSING;
+      websocket._readyState = WebSocket2.CLOSING;
       const err = new Error(message);
       Error.captureStackTrace(err, abortHandshake);
       if (stream.setHeader) {
@@ -3037,7 +3037,7 @@ var require_websocket = __commonJS({
       this.removeListener("close", socketOnClose);
       this.removeListener("data", socketOnData);
       this.removeListener("end", socketOnEnd);
-      websocket._readyState = WebSocket3.CLOSING;
+      websocket._readyState = WebSocket2.CLOSING;
       let chunk;
       if (!this._readableState.endEmitted && !websocket._closeFrameReceived && !websocket._receiver._writableState.errorEmitted && (chunk = websocket._socket.read()) !== null) {
         websocket._receiver.write(chunk);
@@ -3059,7 +3059,7 @@ var require_websocket = __commonJS({
     }
     function socketOnEnd() {
       const websocket = this[kWebSocket];
-      websocket._readyState = WebSocket3.CLOSING;
+      websocket._readyState = WebSocket2.CLOSING;
       websocket._receiver.end();
       this.end();
     }
@@ -3068,7 +3068,7 @@ var require_websocket = __commonJS({
       this.removeListener("error", socketOnError);
       this.on("error", NOOP);
       if (websocket) {
-        websocket._readyState = WebSocket3.CLOSING;
+        websocket._readyState = WebSocket2.CLOSING;
         this.destroy();
       }
     }
@@ -3131,7 +3131,7 @@ var require_websocket_server = __commonJS({
     var extension = require_extension();
     var PerMessageDeflate = require_permessage_deflate();
     var subprotocol = require_subprotocol();
-    var WebSocket3 = require_websocket();
+    var WebSocket2 = require_websocket();
     var { GUID, kWebSocket } = require_constants();
     var keyRegex = /^[+/0-9A-Za-z]{22}==$/;
     var RUNNING = 0;
@@ -3187,7 +3187,7 @@ var require_websocket_server = __commonJS({
           host: null,
           path: null,
           port: null,
-          WebSocket: WebSocket3,
+          WebSocket: WebSocket2,
           ...options
         };
         if (options.port == null && !options.server && !options.noServer || options.port != null && (options.server || options.noServer) || options.server && options.noServer) {
@@ -3514,44 +3514,51 @@ var import_websocket = __toESM(require_websocket(), 1);
 var import_websocket_server = __toESM(require_websocket_server(), 1);
 
 // src/index.ts
-var wss = new import_websocket_server.default({ port: 8080 });
+var sockets = new import_websocket_server.default({ port: 8080 });
 var senderSocket = null;
 var receiverSocket = null;
-wss.on("connection", (socket) => {
-  console.log("connection established");
-  socket.on("message", (data) => {
-    const message = JSON.parse(data);
-    if (message.type === "identify-sender") {
-      console.log("Sender joined");
-      senderSocket = socket;
-    } else if (message.type === "identify-receiver") {
-      console.log("receiver joined");
-      receiverSocket = socket;
-    } else if (message.type === "create-offer") {
-      console.log("Sender offering");
-      if (socket !== senderSocket) return;
-      senderSocket?.send(JSON.stringify({
-        type: "create-answer",
-        sdp: message.sdp
-      }));
-      console.log("answer from receiver");
-    } else if (message.type === "ice-candidate") {
-      if (socket === senderSocket) {
-        console.log("receiver candidate");
-        receiverSocket?.send(JSON.stringify({
-          type: "ice-candidate",
-          candidate: message?.candidate
-        }));
-      } else if (socket === receiverSocket) {
-        console.log("sender candidate");
-        senderSocket?.send(JSON.stringify({
-          type: "ice-candidate",
-          candidate: message?.candidate
-        }));
-      }
+sockets.on("connection", (socket) => {
+  socket.on("error", console.error);
+  socket.on("message", function message(data) {
+    const message2 = JSON.parse(data);
+    switch (message2.type) {
+      case "identify-sender":
+        console.log("Sender added");
+        senderSocket = socket;
+        break;
+      case "identify-receiver":
+        console.log("Receiver added");
+        receiverSocket = socket;
+        break;
+      case "create-offer":
+        if (socket !== senderSocket) return;
+        console.log("Sending offer");
+        receiverSocket?.send(JSON.stringify({ type: "create-offer", sdp: message2.sdp }));
+        break;
+      case "create-answer":
+        if (socket !== receiverSocket) return;
+        console.log("Sending answer");
+        senderSocket?.send(JSON.stringify({ type: "create-answer", sdp: message2.sdp }));
+        break;
+      case "ice-candidate":
+        console.log("Sending ICE candidate");
+        if (socket === senderSocket) {
+          receiverSocket?.send(JSON.stringify({ type: "ice-candidate", candidate: message2.candidate }));
+        } else if (socket === receiverSocket) {
+          senderSocket?.send(JSON.stringify({ type: "ice-candidate", candidate: message2.candidate }));
+        }
+        break;
+      default:
+        console.warn(`Unknown message type: ${message2.type}`);
     }
   });
-  socket.on("error", (err) => {
-    console.log("Something went wrong", err);
+  socket.on("close", () => {
+    if (socket === senderSocket) {
+      console.log("Sender disconnected");
+      senderSocket = null;
+    } else if (socket === receiverSocket) {
+      console.log("Receiver disconnected");
+      receiverSocket = null;
+    }
   });
 });
